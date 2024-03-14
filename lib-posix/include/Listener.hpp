@@ -21,7 +21,7 @@ namespace Posix
         Listener &operator=(const Listener &) = delete;
 
         void listen(Address &address, int backlog = 5);
-        Socket &&accept();
+        Socket accept();
     };
 
 } // namespace Posix

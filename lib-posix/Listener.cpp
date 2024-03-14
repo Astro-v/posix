@@ -21,6 +21,7 @@ Posix::Listener::Listener()
 
 Posix::Listener::~Listener()
 {
+    std::cout << "Closing socket" << std::endl;
     // Close the file descriptor
     if (m_fd != -1)
     {
@@ -54,7 +55,7 @@ void Posix::Listener::listen(Address &address, int backlog)
  * @brief Accept a new connection
  * @return A new client
  */
-Posix::Socket &&Posix::Listener::accept()
+Posix::Socket Posix::Listener::accept()
 {
     int cfd;
     socklen_t len;
@@ -66,10 +67,7 @@ Posix::Socket &&Posix::Listener::accept()
         std::cerr << "Error: accept" << std::endl;
         throw std::runtime_error("Error: accept");
     }
-
-    // Create a new client
-    Socket client(cfd);
-    return std::move(client);
+    return cfd;
 }
 
 void Posix::Listener::handle_bind_error(int error)
