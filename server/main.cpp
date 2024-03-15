@@ -1,6 +1,7 @@
 #include "Socket.hpp"
 #include "Listener.hpp"
 #include "Address.hpp"
+#include "include/Client.hpp"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -12,11 +13,9 @@ int main()
     listener.listen(addr);
     std::cout << "Listening on "
               << "/tmp/test" << std::endl;
-    std::vector<Posix::Socket> clients;
-    Posix::Socket &ref = clients.emplace_back(listener.accept());
+    Client client(listener.accept());
     std::cout << "Accepted connection" << std::endl;
     std::string message;
-    ref.receive(message);
     std::cout << message << std::endl;
     return 0;
 }
