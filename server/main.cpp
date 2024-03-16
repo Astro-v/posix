@@ -1,7 +1,11 @@
 #include "Socket.hpp"
 #include "Listener.hpp"
 #include "Address.hpp"
-#include "include/Client.hpp"
+
+#include "Client.hpp"
+#include "Server.hpp"
+#include "Query.hpp"
+
 #include <iostream>
 #include <vector>
 #include <string>
@@ -13,9 +17,19 @@ int main()
     listener.listen(addr);
     std::cout << "Listening on "
               << "/tmp/test" << std::endl;
-    Client client(listener.accept());
-    std::cout << "Accepted connection" << std::endl;
-    std::string message;
-    std::cout << message << std::endl;
+
+    Server server;
+
+    std::shared_ptr<Client> client(std::make_shared<Client>(listener.accept()));
+
+    server.join(client);
+
+    while (!client->receive())
+    {
+    }
+
+    server.leave(client);
+
+    std::cout << "END" << std::endl;
     return 0;
 }

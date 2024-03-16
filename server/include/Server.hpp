@@ -15,40 +15,30 @@ class Server
     std::vector<std::shared_ptr<Client>> m_clients;
 
 public:
-    boost::signals2::signal<void(Query &, std::shared_ptr<Client> &)> m_queries;
+    boost::signals2::signal<void(Query &, Client *)> m_queries;
     Server() = default;
     ~Server() = default;
 
     void join(std::shared_ptr<Client> &client)
     {
-        boost::signals2::connection connection;
         {
             std::mutex mutex;
             std::lock_guard<std::mutex> lock(mutex);
             m_clients.push_back(client);
             client->join_server(this);
-
-            // ADD subscription to query signal
-            connection = m_queries.connect([this](Query &q, std::shared_ptr<Client> &c)
-                                           {
-                        if (q.type == Query::Type::SEND)
-                        {
-                            // Send the message to the client
-                            std::mutex mutex;
-                            std::lock_guard<std::mutex> lock(mutex);
-                            std::cout << "Sending" << q.message << std::endl;
-                            c->send(q.message);
-                        } });
         }
+        std::cout << "Client joined" << std::endl;
+    }
 
-        std::string message;
-        if (client->receive(message) == 0)
+    void leave(std::shared_ptr<Client> &client)
+    {
         {
-            Query query(message, Query::Type::RECEIVE);
-            m_queries(query, client);
+            std::mutex mutex;
+            std::lock_guard<std::mutex> lock(mutex);
+            client->leave_server();
+            m_clients.erase(std::remove(m_clients.begin(), m_clients.end(), client), m_clients.end());
         }
-
-        connection.disconnect();
+        std::cout << "Client left" << std::endl;
     }
 };
 

@@ -8,8 +8,9 @@ struct Query
     std::string message;
     enum class Type
     {
-        RECEIVE,
-        SEND
+        RECEIVE, // Query to receive a message
+        SEND,    // Query to send a message
+        END      // End of connection
     } type;
 
     Query(std::string message, Type type) : message(message), type(type) {}
