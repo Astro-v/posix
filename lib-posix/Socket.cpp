@@ -110,22 +110,21 @@ int Posix::Socket::send(const std::string &message)
  */
 int Posix::Socket::receive(std::string &message)
 {
-    ssize_t n = 0;
     char buf[100];
 
     memset(buf, 0, sizeof(buf));
 
     // Wait to receive the message (Blocking call)
-    n = ::recv(m_fd, &buf, sizeof(buf), 0);
+    ssize_t bytes_received = ::recv(m_fd, &buf, sizeof(buf), 0);
 
-    if (n == -1)
+    if (bytes_received == -1 || bytes_received == 0)
     {
         // Error or end of the connection
         return 1;
     }
 
     // Store the received message
-    message = std::string(buf, n);
+    message = std::string(buf, bytes_received);
 
     // Everything works fine
     return 0;

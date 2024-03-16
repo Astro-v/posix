@@ -58,7 +58,6 @@ bool Client::receive()
     }
     else
     {
-
         std::cout << "Received " << message << std::endl;
         Query q(message, Query::Type::RECEIVE);
         m_server->m_queries(q, this);
