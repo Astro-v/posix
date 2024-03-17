@@ -13,6 +13,9 @@ int main()
     client.connect(addr);
     std::string message = "Hello, server!";
     client.send(message);
+    std::string response;
+    client.receive(response);
+    std::cout << "Server says: " << response << std::endl;
 
     return 0;
 }
