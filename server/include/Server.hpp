@@ -12,11 +12,11 @@
 class Server
 {
     std::vector<std::shared_ptr<Client>> m_clients;
-    std::unique_ptr<MessageProcessingPolicy> m_policy;
+    std::unique_ptr<MessageProcessingPolicy> m_message_processing_policy;
 
 public:
     boost::signals2::signal<void(Query &, Client *)> m_queries;
-    Server();
+    Server(std::unique_ptr<MessageProcessingPolicy> message_processing_policy);
     ~Server() = default;
 
     void join(std::shared_ptr<Client> &client);

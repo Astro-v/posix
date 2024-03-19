@@ -2,10 +2,9 @@
 #include <mutex>
 #include "Server.hpp"
 
-Server::Server()
+Server::Server(std::unique_ptr<MessageProcessingPolicy> message_processing_policy) : m_message_processing_policy(std::move(message_processing_policy))
 {
-    m_policy = std::make_unique<DummyMessageProcessing>();
-    m_policy->configure(this);
+    m_message_processing_policy->configure(this);
 }
 
 void Server::join(std::shared_ptr<Client> &client)

@@ -18,6 +18,7 @@ namespace Posix
         Socket(Socket &&other);
         ~Socket();
 
+        int set_blocking(bool blocking);
         int set_timeout(int seconds);
         int connect(Address &address);
         int send(const std::string &message);

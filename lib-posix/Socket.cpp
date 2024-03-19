@@ -5,6 +5,9 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <iostream>
+#include <stdexcept>
+#include <cstring>
+#include <fcntl.h>
 
 Posix::Socket::Socket() : Socket(::socket(AF_UNIX, SOCK_STREAM, 0))
 {
@@ -35,6 +38,39 @@ Posix::Socket::~Socket()
     {
         ::close(m_fd);
     }
+}
+
+/**
+ * @brief Set the blocking mode of the socket
+ * @param blocking True to set the socket in blocking mode, false otherwise
+ * @return 0 if everything works fine, 1 otherwise
+ */
+int Posix::Socket::set_blocking(bool blocking)
+{
+    int flags = ::fcntl(m_fd, F_GETFL, 0);
+
+    if (flags == -1)
+    {
+        std::cerr << "Error: fcntl F_GETFL" << std::endl;
+        return 1;
+    }
+
+    if (blocking)
+    {
+        flags &= ~O_NONBLOCK;
+    }
+    else
+    {
+        flags |= O_NONBLOCK;
+    }
+
+    if (::fcntl(m_fd, F_SETFL, flags) == -1)
+    {
+        std::cerr << "Error: fcntl F_SETFL" << std::endl;
+        return 1;
+    }
+
+    return 0;
 }
 
 /**

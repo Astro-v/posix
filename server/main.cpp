@@ -18,7 +18,7 @@ int main()
     std::cout << "Listening on "
               << "/tmp/test" << std::endl;
 
-    Server server;
+    Server server(std::make_unique<DummyMessageProcessing>());
 
     std::shared_ptr<Client> client(std::make_shared<Client>(listener.accept()));
 
